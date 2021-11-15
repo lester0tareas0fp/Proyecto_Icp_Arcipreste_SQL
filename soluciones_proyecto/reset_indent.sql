@@ -1,0 +1,1 @@
+DBCC CHECKIDENT (usuario, reseed, 0)
