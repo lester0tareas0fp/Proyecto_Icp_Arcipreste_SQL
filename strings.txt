@@ -1,5 +1,5 @@
-Data Source= PSERVER2;Initial Catalog= ARCIPRESTE1;Integrated Security=SSPI;User ID=ARCIPRESTE1;Password=1Arcipreste; //Probablemente para establecer conexión con pserver2
-Data Source=(localdb)\\mssqllocaldb;Initial Catalog=CursoWebApis;Integrated Security=True //Base de datos local
+Data Source= PSERVER2;Initial Catalog= ARCIPRESTE1;User ID=ARCIPRESTE1;Password=1Arcipreste; //Probablemente para establecer conexión con pserver2
+Data Source=(localdb)\\mssqllocaldb;Initial Catalog=CursoWebApis;Integrated Security=True; //Base de datos local
 
 
 https://www.entityframeworktutorial.net/efcore/create-model-for-existing-database-in-ef-core.aspx
