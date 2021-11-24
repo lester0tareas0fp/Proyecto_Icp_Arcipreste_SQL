@@ -1,0 +1,119 @@
+USE [ARCIPRESTE1]
+GO
+/****** Object:  StoredProcedure [dbo].[PA_ACTUALIZAR_ARTICULO]    Script Date: 17/11/2021 13:26:58 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+  
+  /*-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+	NOMBRE DEL PROCEDIMIENTO:	[PA_CREAR_ARTICULO]
+	FECHA DE CREACIÓN: 		23/11/2021		
+	AUTOR:				LESTER ARELLANO
+
+	FUNCIONAMIENTO:			ACTUALIZA UN ARTICULO EN LA TABLA ARTICULOS Y LA IMAGEN EN TABLA IMAGEN
+
+------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+	
+ALTER PROCEDURE [dbo].[PA_ACTUALIZAR_ARTICULO] 
+(
+
+	@ID_ARTICULO INT,
+	@ARTICULO VARCHAR(100),
+	@DESCRIPCION VARCHAR(100),
+	@FABRICANTE VARCHAR(100),
+	@PESO DECIMAL(18,2),
+	@LARGO DECIMAL(18,2),
+	@ANCHO DECIMAL(18,2),
+	@ALTO DECIMAL(18,2),
+	@PRECIO DECIMAL(18,2),
+	@NOMBRE_IMAGEN VARCHAR(500),
+	@IMAGEN VARCHAR(MAX),
+	@FORMATO VARCHAR(10),
+	
+	@INVOKER INT,
+	@USUARIO VARCHAR(20),
+	@CULTURA VARCHAR(5),
+
+	@RETCODE INT OUTPUT,
+	@MENSAJE VARCHAR(1000) OUTPUT
+)
+AS
+
+	BEGIN TRY
+
+		-- VALIDACIONES
+		-- OPERACIONES
+		-- MENSAJES
+
+		IF @DESCRIPCION IS NULL OR @DESCRIPCION = ''
+		BEGIN
+		
+			SET @RETCODE = 2
+			SET @MENSAJE = 'El parámetro descripción no puede ser nulo o vacío'	
+			RETURN @RETCODE
+		END
+
+		IF EXISTS(SELECT ID_ARTICULO FROM ARTICULO WHERE DESCRIPCION = @DESCRIPCION AND ID_ARTICULO != @ID_ARTICULO)
+		BEGIN
+		
+			SET @RETCODE = 2
+			SET @MENSAJE = 'No se pueden insertar artículos repetidos'	
+			RETURN @RETCODE
+		END
+
+		IF @IMAGEN IS NULL OR @IMAGEN = ''
+		BEGIN
+		
+			SET @RETCODE = 2
+			SET @MENSAJE = 'Error en el envío de la imagen, imagen null'	
+			RETURN @RETCODE
+		END
+
+		IF @NOMBRE_IMAGEN IS NULL OR @NOMBRE_IMAGEN = ''
+		BEGIN
+		
+			SET @RETCODE = 2
+			SET @MENSAJE = 'Error en el envío de la imagen, nombre de imagen null'	
+			RETURN @RETCODE
+		END
+
+		UPDATE ARTICULO
+
+		SET
+			ARTICULO = UPPER(@ARTICULO),
+			DESCRIPCION = UPPER(@DESCRIPCION),
+			FABRICANTE = UPPER(@FABRICANTE),
+			PESO = @PESO,
+			LARGO = @LARGO,
+			ANCHO = @ANCHO,
+			ALTO = @ALTO,
+			PRECIO = @PRECIO
+			
+		WHERE
+			ID_ARTICULO = @ID_ARTICULO			
+
+		DECLARE @ID_IMAGEN INT = (SELECT ID_IMAGEN FROM IMAGEN WHERE ID_ARTICULO = @ID_ARTICULO)
+
+		UPDATE IMAGEN
+
+		SET
+
+			IMAGEN = @IMAGEN,
+			FORMATO = @FORMATO,
+			NOMBRE_IMAGEN = @NOMBRE_IMAGEN
+
+		WHERE 
+			ID_IMAGEN = @ID_IMAGEN
+	
+		SET @RETCODE = 10
+		SET @MENSAJE = 'Se ha actualizado el artículo correctamente'
+		RETURN
+	END TRY
+	BEGIN CATCH
+	END CATCH
+	
